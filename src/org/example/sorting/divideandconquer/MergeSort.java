@@ -16,7 +16,7 @@ public class MergeSort {
     }
 
     private int[] mergeSort(int[] numbers) {
-        if (numbers.length <= 1) {
+        if (numbers.length == 1) {
             return numbers;
         }
 
@@ -34,7 +34,8 @@ public class MergeSort {
         int[] result = new int[left.length + right.length];
 
         while (leftPointer < left.length || rightPointer < right.length) {
-            if (leftPointer < left.length && rightPointer < right.length && left[leftPointer] <= right[rightPointer]) {
+            if (leftPointer < left.length && rightPointer < right.length
+                    && left[leftPointer] <= right[rightPointer]) {
                 result[resultPointer] = left[leftPointer];
 
                 leftPointer++;
