@@ -1,28 +1,26 @@
 package org.example.graph.liveclass;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 import static java.util.List.of;
 
 /**
  * Graph should have only one connected component
  * No cycles
- *  - How to detect a cycle?
- *
- *  Time Complexity is O(m + n) for DFS & BFS, is it correct?
-*/
+ * - How to detect a cycle?
+ * <p>
+ * Time Complexity is O(m + n) for DFS & BFS, is it correct?
+ */
 public class IsValidGraphTree {
     public static void main(String[] args) {
         IsValidGraphTree isValidGraphTree = new IsValidGraphTree();
 
-        isValidGraphTree.isValidGraphTree(buildGraph(of(of(0, 1), of(0, 2), of(0, 3), of(1, 4))));
-        isValidGraphTree.isValidGraphTree(buildGraph(of(of(0, 1), of(1, 2), of(2, 3), of(1, 3), of(1, 4))));
+        //System.out.println("IsValidGraph: " + isValidGraphTree.isValidGraphTree(of(of(0, 1), of(0, 2), of(1, 2))));
+        System.out.println("IsValidGraph: " + isValidGraphTree.isValidGraphTree(of(of(0, 1), of(0, 2), of(0, 3), of(1, 4))));
+        //System.out.println("IsValidGraph: " + isValidGraphTree.isValidGraphTree(of(of(0, 1), of(1, 2), of(2, 3), of(1, 3), of(1, 4))));
     }
 
-    private static Map<Integer, List<Integer>> buildGraph(List<List<Integer>> edges) {
+    private Map<Integer, List<Integer>> buildGraph(List<List<Integer>> edges) {
         Map<Integer, List<Integer>> graph = new HashMap<>();
 
         for (List<Integer> edge : edges) {
@@ -41,41 +39,58 @@ public class IsValidGraphTree {
         return graph;
     }
 
-    private void isValidGraphTree(Map<Integer, List<Integer>> graph) {
+    private boolean isValidGraphTree(List<List<Integer>> edges) {
+        Map<Integer, List<Integer>> graph = buildGraph(edges);
+
         List<Integer> visitorList = new ArrayList<>();
 
         int connectedComponentsCount = 0;
 
+        Map<Integer, Integer> parentMap = new HashMap<>();
+
         for (Integer node : graph.keySet()) {
-            if (dfs(graph, node, visitorList)) {
+            if (!visitorList.contains(node)) {
                 connectedComponentsCount++;
 
                 if (connectedComponentsCount > 1) {
                     break;
                 }
+
+                if (dfs(graph, node, visitorList, parentMap)) {
+                    return false;
+                }
             }
         }
 
-        System.out.println("IsValidGraph: " + !(connectedComponentsCount > 1));
+        return connectedComponentsCount == 1;
     }
 
-    private boolean dfs(Map<Integer, List<Integer>> graph, int current, List<Integer> visitorList) {
-        if (visitorList.contains(current)) {
-            return false;
-        }
+    private boolean dfs(Map<Integer, List<Integer>> graph, int current,
+                        List<Integer> visitorList, Map<Integer, Integer> parentMap) {
+        Stack<Integer> stack = new Stack<>();
 
-        visitorList.add(current);
+        stack.push(current);
 
-        List<Integer> neighbors = graph.get(current);
+        while (!stack.isEmpty()) {
+            current = stack.pop();
 
-        if (neighbors != null) {
-            for (Integer neighbor : neighbors) {
-                dfs(graph, neighbor, visitorList);
+            List<Integer> neighbors = graph.get(current);
+
+            if (neighbors != null) {
+                for (Integer neighbor : neighbors) {
+                    if (!visitorList.contains(neighbor)) {
+                        stack.push(neighbor);
+
+                        visitorList.add(neighbor);
+
+                        parentMap.put(neighbor, current);
+                    } else if(!parentMap.get(current).equals(neighbor)) {
+                        return true;
+                    }
+                }
             }
         }
 
-        return true;
+        return false;
     }
-
-
 }
