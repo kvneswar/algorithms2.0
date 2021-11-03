@@ -1,4 +1,4 @@
-package org.example.dynamicprogramming;
+package org.example.dynamicprogramming.memoization;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -12,14 +12,16 @@ public class Fibonacci {
 
         Fibonacci fibonacci = new Fibonacci();
 
-        System.out.println("fib(0): " + fibonacci.fib(0, memo));
+        /*System.out.println("fib(0): " + fibonacci.fib(0, memo));
         System.out.println("fib(1): " + fibonacci.fib(1, memo));
         System.out.println("fib(2): " + fibonacci.fib(2, memo));
         System.out.println("fib(3): " + fibonacci.fib(3, memo));
         System.out.println("fib(4): " + fibonacci.fib(4, memo));
         System.out.println("fib(5): " + fibonacci.fib(5, memo));
         System.out.println("fib(6): " + fibonacci.fib(6));
-        System.out.println("fib(7): " + fibonacci.fib(7));
+        System.out.println("fib(7): " + fibonacci.fib(7));*/
+
+        System.out.println(fibonacci.fibonacci(50));
     }
 
     /**
@@ -68,5 +70,29 @@ public class Fibonacci {
         return fibSeries[number % 3];
     }
 
+    private int fibonacci(int n){
+        if(n <= 2)
+            return 1;
 
+        //return fibonacci(n-1) + fibonacci(n-2);
+        return foo(n, 0) + bar(n, 0);
+    }
+
+    private int foo(int n, int result){
+        if(n <= 2)
+            return 1;
+
+        result = result + foo(n-2, result);
+
+        return result;
+    }
+
+    private int bar(int n, int result){
+        if(n <= 2)
+            return 1;
+
+        result = result + bar(n-2, result);
+
+        return result;
+    }
 }
